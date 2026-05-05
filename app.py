@@ -1334,6 +1334,21 @@ def api_controller_clicks(token):
         "sets": [m.sets1, m.sets2],
     })
 
+@app.route("/api/controller/<token>/ping")
+def api_controller_ping(token):
+    court = Court.query.filter_by(controller_token=token).first()
+    if not court:
+        return jsonify({"ok": False, "error": "Token nicht gefunden."}), 404
+
+    t = db.session.get(Tournament, court.tournament_id)
+
+    return jsonify({
+        "ok": True,
+        "court": court.name,
+        "tournament": t.name,
+        "token": court.controller_token,
+    })
+
 
 @app.route("/api/t/<public_id>/match/<int:match_id>/reset", methods=["POST"])
 @login_required
