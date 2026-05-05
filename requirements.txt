@@ -1,9 +1,8 @@
-flask
-flask-sqlalchemy
-flask-login
-werkzeug
+Flask
+Flask-SocketIO
+Flask-SQLAlchemy
+Flask-Login
+Werkzeug
 gunicorn
-psycopg2-binary
-flask-socketio
-simple-websocket
 eventlet
+psycopg2-binary
