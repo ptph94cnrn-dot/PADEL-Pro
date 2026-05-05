@@ -273,18 +273,21 @@ document.addEventListener('keydown', (e) => {
     e.key === "Unidentified"
   ) {
     e.preventDefault();
+	
+	if (e.repeat) return;
+
     handleVolume();
   }
 });
 
-document.addEventListener('keyup', (e) => {
-  if (
-    (e.key && e.key.includes("Volume")) ||
-    (e.code && e.code.includes("Volume"))
-  ) {
-    handleVolume();
-  }
-});
+//document.addEventListener('keyup', (e) => {
+//  if (
+//    (e.key && e.key.includes("Volume")) ||
+//    (e.code && e.code.includes("Volume"))
+//  ) {
+//    handleVolume();
+//  }
+//});
 document.addEventListener('click',()=>{voicesEnabled=true},{once:true});
 document.querySelector('[data-action="start"]')?.addEventListener('click',()=>{
   const url = fixedCourtId ? `/api/t/${publicId}/court/${fixedCourtId}/start` : `/api/t/${publicId}/start`;
