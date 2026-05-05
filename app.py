@@ -1253,6 +1253,28 @@ def api_undo(public_id, match_id):
     undo_match(m); db.session.commit()
     return jsonify_and_emit(t)
 
+@app.route("/api/t/<public_id>/controller-setup")
+def api_controller_setup(public_id):
+    t = get_tournament_or_404(public_id)
+    courts = get_courts(t.id)
+
+    return jsonify({
+        "ok": True,
+        "tournament": {
+            "public_id": t.public_id,
+            "name": t.name,
+        },
+        "courts": [
+            {
+                "id": c.id,
+                "number": c.number,
+                "name": c.name,
+                "controller_token": c.controller_token,
+            }
+            for c in courts
+        ],
+    })
+
 @app.route("/api/controller/<token>/clicks", methods=["POST"])
 def api_controller_clicks(token):
     court = Court.query.filter_by(controller_token=token).first()
