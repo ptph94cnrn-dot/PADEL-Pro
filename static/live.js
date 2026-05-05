@@ -259,7 +259,7 @@ function currentControllerMatch(){
 function handleVolume(){
   if(role!=='controller') return;
   clickCount++; clearTimeout(clickTimer);
-  clickTimer=setTimeout(()=>{const m=currentControllerMatch(); const c=timerContext(); if(!m || (!m.is_final && (!c?.timer_running || (c?.remaining_seconds??0)<=0))){clickCount=0;return} if(clickCount===1) point(m.id,0); else if(clickCount===2) point(m.id,1); else undo(m.id); clickCount=0;},430);
+  clickTimer=setTimeout(()=>{const m=currentControllerMatch(); const c=timerContext(); if(!m || (!m.is_final && (!c?.timer_running || (c?.remaining_seconds??0)<=0))){clickCount=0;return} if(clickCount===1) point(m.id,0); else if(clickCount===2) point(m.id,1); else undo(m.id); clickCount=0;},350);
 }
 // 🔥 FIX: robuster Volume Button Listener
 document.addEventListener('keydown', (e) => {
