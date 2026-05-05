@@ -1,0 +1,13 @@
+{% extends 'base.html' %}{% block content %}
+<section class="card"><h1>Turnier erstellen</h1>{% if error %}<p class="error">{{ error }}</p>{% endif %}
+<form method="post" class="form">
+  <div class="grid two"><label>Turniername<input name="name" value="Padel Turnier"></label><label>Courts kommagetrennt<input name="court_names" value="Court 1, Court 2"></label></div>
+  <div class="grid three"><label>Rundenzeit Minuten<input name="round_minutes" type="number" min="1" value="20"></label><label>Zeitansage vor Ablauf Sekunden<input name="warning_seconds" type="number" min="5" value="120"></label><label>Zählweise<select name="scoring_mode">{% for k,v in scoring_modes.items() %}<option value="{{k}}">{{v}}</option>{% endfor %}</select></label></div>
+  <label class="check"><input type="checkbox" name="double_round"> Hin- und Rückrunde</label>
+  <h2>Teams & Spieler</h2><div id="teamsForm">
+    {% for i in range(4) %}<div class="team-row"><input name="team_name" value="Team {{i+1}}" placeholder="Team"><input name="player1" value="Spieler {{i*2+1}}" placeholder="Spieler 1"><input name="player2" value="Spieler {{i*2+2}}" placeholder="Spieler 2"></div>{% endfor %}
+  </div>
+  <div class="actions"><button type="button" onclick="addTeamRow()">Team hinzufügen</button><button class="primary">Erstellen</button></div>
+</form></section>
+<script>function addTeamRow(){const n=document.querySelectorAll('.team-row').length+1;document.getElementById('teamsForm').insertAdjacentHTML('beforeend',`<div class="team-row"><input name="team_name" value="Team ${n}" placeholder="Team"><input name="player1" value="Spieler ${n*2-1}" placeholder="Spieler 1"><input name="player2" value="Spieler ${n*2}" placeholder="Spieler 2"></div>`)}</script>
+{% endblock %}

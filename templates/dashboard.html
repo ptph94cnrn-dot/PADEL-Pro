@@ -1,0 +1,5 @@
+{% extends 'base.html' %}{% set hide_back = true %}{% block content %}
+<section class="card"><div class="split"><h1>Dashboard</h1><a class="button primary" href="{{ url_for('create_tournament') }}">Neues Turnier</a></div><div class="list">
+{% for t in tournaments %}<div class="history-row"><a href="{{ url_for('admin_tournament', public_id=t.public_id) }}"><strong>{{ t.name }}</strong><span>{{ t.status }} · {{ t.courts_count }} Courts</span></a><form method="post" action="{{ url_for('delete_tournament_route', public_id=t.public_id) }}" onsubmit="return confirm('Turnier wirklich löschen?');"><button class="danger">Löschen</button></form></div>{% else %}<p>Noch kein Turnier.</p>{% endfor %}
+</div></section>
+{% endblock %}

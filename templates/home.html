@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% block content %}
+<section class="hero card">
+  <div>
+    <h1>Turniere live zählen, steuern und auswerten.</h1>
+    <p>Mit Login, mehreren Courts, Controller-Links, Selfie-Stick per Volume-Up, Ansagen, Statistik und KI-Coach.</p>
+    <div class="actions"><a class="button primary" href="{{ url_for('create_tournament') if current_user.is_authenticated else url_for('login') }}">Turnier erstellen</a></div>
+  </div>
+</section>
+<section class="card">
+  <h2>Letzte Turniere</h2>
+  <div class="list">
+  {% for t in public_tournaments %}<a href="{{ url_for('public_tournament', public_id=t.public_id) }}">{{ t.name }}</a>{% else %}<p>Noch keine Turniere.</p>{% endfor %}
+  </div>
+</section>
+{% endblock %}

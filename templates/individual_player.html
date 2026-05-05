@@ -1,0 +1,8 @@
+{% extends 'base.html' %}{% block content %}
+<section class="card">
+  <div class="split"><div><h1>{{ player.name }}</h1><p class="muted">Individuelle Spielerstatistik · {{ t.name }}</p></div><a class="button" href="{{ url_for('leaderboard', public_id=t.public_id) }}">Zur Tabelle</a></div>
+  <div class="stats"><div><strong>{{ row.points }}</strong><span>Punkte</span></div><div><strong>{{ row.played }}</strong><span>Spiele</span></div><div><strong>{{ row.wins }}/{{ row.draws }}/{{ row.losses }}</strong><span>S/U/N</span></div><div><strong>{{ row.winrate }}%</strong><span>Winrate</span></div><div><strong>{{ row.for }}:{{ row.against }}</strong><span>Games</span></div><div><strong>{{ row.diff }}</strong><span>Diff</span></div></div>
+  <h2>KI-Coach</h2><div class="coach">{% for tip in tips %}<p>💡 {{ tip }}</p>{% endfor %}</div>
+  <h2>Teams</h2><p>{{ row.teams|join(' / ') }}</p>
+  <h2>Matches</h2><table><thead><tr><th>Runde</th><th>Phase</th><th>Score</th><th>Gewinner</th></tr></thead><tbody>{% for m in matches %}<tr><td>{{ m.round_no }}</td><td>{{ m.phase }}</td><td>{{ m.score1 or 0 }}:{{ m.score2 or 0 }}</td><td>{{ match_winner_name(m) }}</td></tr>{% endfor %}</tbody></table>
+</section>{% endblock %}

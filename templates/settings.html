@@ -1,0 +1,11 @@
+{% extends 'base.html' %}{% block content %}
+<section class="card"><h1>Einstellungen</h1><form method="post" class="form">
+<div class="grid two"><label>Turniername<input name="name" value="{{ t.name }}"></label><label>Standard-Zählweise<select name="scoring_mode">{% for k,v in scoring_modes.items() %}<option value="{{k}}" {% if t.scoring_mode==k %}selected{% endif %}>{{v}}</option>{% endfor %}</select></label></div>
+
+<div class="grid three"><label>Rundenzeit Minuten<input name="round_minutes" type="number" min="1" value="{{ t.round_minutes }}"></label><label>Zeitansage Sekunden vor Ende<input name="warning_seconds" type="number" min="5" value="{{ t.warning_seconds }}"></label><label class="check"><input type="checkbox" name="double_round" {% if t.double_round %}checked{% endif %}> Hin- und Rückrunde</label></div>
+<h2>Courts</h2>{% for c in courts %}<input name="court_name" value="{{ c.name }}">{% endfor %}
+<h2>Teams & Spieler</h2>{% for team in teams %}{% set ps=team_players(team) %}<div class="team-row"><input type="hidden" name="team_id" value="{{ team.id }}"><input name="team_name" value="{{ team.name }}"><input name="player1" value="{{ ps[0] if ps|length>0 else '' }}"><input name="player2" value="{{ ps[1] if ps|length>1 else '' }}"></div>{% endfor %}
+<label class="check"><input type="checkbox" name="regenerate"> Spielplan nach Speichern neu erstellen</label>
+<div class="actions"><button class="primary">Speichern</button><a class="button" href="{{ url_for('admin_tournament', public_id=t.public_id) }}">Zurück</a></div>
+</form></section>
+{% endblock %}

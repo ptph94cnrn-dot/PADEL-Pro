@@ -1,0 +1,9 @@
+{% extends 'base.html' %}{% block content %}
+<section class="admin-shell" data-public-id="{{ t.public_id }}" data-role="public">
+  <div class="score-header card"><div><h1>{{ t.name }}</h1><p>Liveanzeige · Runde <span data-round>...</span></p></div><div class="actions"><a class="button" href="{{ url_for('leaderboard', public_id=t.public_id) }}">Tabelle</a><a class="button" href="{{ url_for('bracket', public_id=t.public_id) }}">Turnierbaum</a></div></div>
+  <main class="courts-grid" data-courts></main>
+  <section class="card"><h2>Statistik</h2><div data-table></div></section>
+</section>
+<script src="/socket.io/socket.io.js"></script>
+<script src="{{ url_for('static', filename='live.js') }}"></script>
+{% endblock %}

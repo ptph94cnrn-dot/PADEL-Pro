@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}PADEL Pro{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="manifest" href="{{ url_for('manifest') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('home') }}">PADEL Pro</a>
+    <nav>
+      {% if not hide_back|default(false) %}<button type="button" class="nav-back" onclick="appBack()">← Zurück</button>{% endif %}
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+      {% else %}
+        <a href="{{ url_for('home') }}">Start</a>
+        <a href="{{ url_for('login') }}">Login</a>
+        <a class="pill" href="{{ url_for('register') }}">Registrieren</a>
+      {% endif %}
+    </nav>
+  </header>
+  <main class="page">{% block content %}{% endblock %}</main>
+<script>
+function appBack(){
+  const fallback = {{ (url_for('dashboard') if current_user.is_authenticated else url_for('home'))|tojson }};
+  try {
+    const ref = document.referrer ? new URL(document.referrer) : null;
+    if (ref && ref.origin === location.origin && ref.href !== location.href) {
+      location.href = ref.pathname + ref.search + ref.hash;
+      return;
+    }
+    if (history.length > 1) { history.back(); return; }
+  } catch(e) {}
+  location.href = fallback;
+}
+</script>
+</body>
+</html>

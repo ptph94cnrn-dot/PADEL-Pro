@@ -1,0 +1,14 @@
+{% extends 'base.html' %}{% block content %}
+<section class="admin-shell" data-public-id="{{ t.public_id }}" data-role="admin">
+  <div class="score-header card">
+    <div><h1>{{ t.name }}</h1><p>Admin · Runde <span data-round>...</span></p></div>
+    <div class="actions"><button class="danger" data-action="endRound">Runde beenden & nächste starten</button><button data-action="nextRound">Nur nächste Runde</button><a class="button" href="{{ url_for('settings', public_id=t.public_id) }}">Einstellungen</a><a class="button" href="{{ url_for('bracket', public_id=t.public_id) }}">Turnierbaum</a><a class="button" href="{{ url_for('public_tournament', public_id=t.public_id) }}">Anzeige</a><form method="post" action="{{ url_for('reset_tournament_route', public_id=t.public_id) }}" onsubmit="return confirm('Turnier wirklich resetten? Es startet wieder in Runde 1.');"><button class="danger">Turnier resetten</button></form></div>
+  </div>
+  <section class="card"><h2>Controller-Links für gepairte Geräte</h2><p class="muted">Öffne pro Court den passenden Link auf dem Gerät, das mit dem Selfie-Stick gepairt ist.</p><div class="controller-links" data-controller-links></div></section>
+  <main class="courts-grid" data-courts></main>
+  <section class="card"><h2>Statistik</h2><p class="muted">S/U/N wird erst gezählt, wenn die Runde abgeschlossen und gespeichert ist.</p><div data-table></div></section>
+  <section class="card"><h2>Alle Matches</h2><div data-matches></div></section>
+</section>
+<script src="/socket.io/socket.io.js"></script>
+<script src="{{ url_for('static', filename='live.js') }}"></script>
+{% endblock %}

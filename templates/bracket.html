@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% block content %}
+<section class="card">
+  <div class="split"><div><h1>{{ t.name }} · Turnierbaum</h1><p class="muted">Die Finalpaarungen entstehen aus der gespeicherten Gruppenwertung.</p></div><a class="button" href="{{ url_for('public_tournament', public_id=t.public_id) }}">Zurück</a></div>
+</section>
+<section class="bracket">
+  <div class="bracket-col card"><h2>Qualifikation</h2>{% for r in data.qualified %}<div class="bracket-team"><strong>#{{ loop.index }} {{ r.name }}</strong><small>{{ r.players|join(' / ') }} · {{ r.points }} Pkt · Diff {{ r.diff }}</small></div>{% else %}<p class="muted">Noch keine gespeicherten Ergebnisse.</p>{% endfor %}</div>
+  <div class="bracket-col card"><h2>Finalrunde</h2>
+    {% if data.final %}<div class="bracket-match"><span>Finale</span><strong>{{ data.final.team_a.name }} vs {{ data.final.team_b.name }}</strong><small>Status: {{ data.final.status }} · {{ data.final.score[0] }}:{{ data.final.score[1] }}</small></div>{% else %}<div class="bracket-match muted">Finale wird nach der Gruppenphase erzeugt.</div>{% endif %}
+    {% if data.third %}<div class="bracket-match"><span>Spiel um Platz 3</span><strong>{{ data.third.team_a.name }} vs {{ data.third.team_b.name }}</strong><small>Status: {{ data.third.status }} · {{ data.third.score[0] }}:{{ data.third.score[1] }}</small></div>{% endif %}
+  </div>
+  <div class="bracket-col card"><h2>Sieger</h2>
+    {% if data.final and data.final.status == 'finished' %}<div class="winner">🏆 {{ data.final.winner_name }}</div>{% else %}<p class="muted">Noch offen.</p>{% endif %}
+  </div>
+</section>
+{% endblock %}
