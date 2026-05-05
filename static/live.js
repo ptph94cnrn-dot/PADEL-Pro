@@ -261,7 +261,30 @@ function handleVolume(){
   clickCount++; clearTimeout(clickTimer);
   clickTimer=setTimeout(()=>{const m=currentControllerMatch(); const c=timerContext(); if(!m || (!m.is_final && (!c?.timer_running || (c?.remaining_seconds??0)<=0))){clickCount=0;return} if(clickCount===1) point(m.id,0); else if(clickCount===2) point(m.id,1); else undo(m.id); clickCount=0;},430);
 }
-document.addEventListener('keydown',e=>{if(e.code==='AudioVolumeUp'||e.key==='AudioVolumeUp'){e.preventDefault();handleVolume();}});
+// 🔥 FIX: robuster Volume Button Listener
+document.addEventListener('keydown', (e) => {
+  console.log("KEYDOWN:", e.key, e.code);
+
+  if (
+    e.key === "AudioVolumeUp" ||
+    e.code === "AudioVolumeUp" ||
+    e.key === "VolumeUp" ||
+    e.code === "VolumeUp" ||
+    e.key === "Unidentified"
+  ) {
+    e.preventDefault();
+    handleVolume();
+  }
+});
+
+document.addEventListener('keyup', (e) => {
+  if (
+    (e.key && e.key.includes("Volume")) ||
+    (e.code && e.code.includes("Volume"))
+  ) {
+    handleVolume();
+  }
+});
 document.addEventListener('click',()=>{voicesEnabled=true},{once:true});
 document.querySelector('[data-action="start"]')?.addEventListener('click',()=>{
   const url = fixedCourtId ? `/api/t/${publicId}/court/${fixedCourtId}/start` : `/api/t/${publicId}/start`;
