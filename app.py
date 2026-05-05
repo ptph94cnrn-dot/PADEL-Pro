@@ -34,6 +34,16 @@ SCORING_MODES = {
     "star_point_2026": "Star Point 2026",
 }
 
+def generate_short_controller_token():
+    while True:
+        token = secrets.token_hex(3).upper()
+        try:
+            exists = Court.query.filter_by(controller_token=token).first()
+        except Exception:
+            exists = None
+        if not exists:
+            return token
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -67,7 +77,7 @@ class Court(db.Model):
     tournament_id = db.Column(db.Integer, db.ForeignKey("tournament.id"), nullable=False)
     number = db.Column(db.Integer, nullable=False, default=1)
     name = db.Column(db.String(80), nullable=False, default="Court")
-    controller_token = db.Column(db.String(32), unique=True, nullable=False, default=lambda: secrets.token_urlsafe(18))
+    controller_token = db.Column(db.String(6),unique=True,nullable=False,default=generate_short_controller_token)
     timer_running = db.Column(db.Boolean, nullable=False, default=False)
     round_started_at = db.Column(db.DateTime(timezone=True), nullable=True)
     round_ends_at = db.Column(db.DateTime(timezone=True), nullable=True)
