@@ -1,8 +1,8 @@
 {% extends 'base.html' %}{% block content %}
-<section class="admin-shell" data-public-id="{{ t.public_id }}" data-role="controller" data-court-id="{{ court.id }}">
+<section class="admin-shell" data-public-id="{{ t.public_id }}" data-role="controller" data-court-id="{{ court.id }}" tabindex="-1">
   <div class="score-header card"><div><h1>{{ court.name }}</h1><p>{{ t.name }} · gepairter Zähler</p></div><div class="timer"><span data-timer>--:--</span></div><div class="actions"><a class="button" href="{{ back_url }}">Zurück</a><a class="button" href="{{ url_for('public_tournament', public_id=t.public_id) }}">Zur Anzeige</a>{% if current_user.is_authenticated and current_user.id == t.owner_id %}<button class="primary" data-action="start">Start/Weiter</button><button data-action="stop">Pause</button>{% endif %}</div></div>
   <main class="courts-grid single" data-courts></main>
-  <section class="card remote-hint"><h2>Selfie-Stick</h2><p>1x Volume-Up = links · 2x = rechts · 3x = Undo. Tippe einmal auf die Seite, falls der Browser Tastaturbefehle erst danach annimmt.</p></section>
+  <section class="card remote-hint"><h2>Selfie-Stick</h2><p>1x Volume-Up = links · 2x = rechts · 3x = Undo. Öffne diesen Controller-Link auf dem PC/Gerät, mit dem der Selfie-Stick gekoppelt ist. Tippe einmal auf die Seite, falls der Browser Tastaturbefehle erst danach annimmt.</p></section>
 </section>
 <script src="/socket.io/socket.io.js"></script>
 <script src="{{ url_for('static', filename='live.js') }}"></script>

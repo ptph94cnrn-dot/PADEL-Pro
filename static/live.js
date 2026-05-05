@@ -261,33 +261,80 @@ function handleVolume(){
   clickCount++; clearTimeout(clickTimer);
   clickTimer=setTimeout(()=>{const m=currentControllerMatch(); const c=timerContext(); if(!m || (!m.is_final && (!c?.timer_running || (c?.remaining_seconds??0)<=0))){clickCount=0;return} if(clickCount===1) point(m.id,0); else if(clickCount===2) point(m.id,1); else undo(m.id); clickCount=0;},350);
 }
-// 🔥 FIX: robuster Volume Button Listener
-document.addEventListener('keydown', (e) => {
-  console.log("KEYDOWN:", e.key, e.code);
+let volumeKeyIsDown = false;
+let lastVolumeHandledAt = 0;
 
-  if (
-    e.key === "AudioVolumeUp" ||
-    e.code === "AudioVolumeUp" ||
-    e.key === "VolumeUp" ||
-    e.code === "VolumeUp" ||
-    e.key === "Unidentified"
-  ) {
-    e.preventDefault();
-	
-	if (e.repeat) return;
+function isVolumeUpEvent(e){
+  const key = String(e.key || '').toLowerCase();
+  const code = String(e.code || '').toLowerCase();
+  const which = e.which || e.keyCode || 0;
 
+  return (
+    key === 'audiovolumeup' ||
+    key === 'volumeup' ||
+    code === 'audiovolumeup' ||
+    code === 'volumeup' ||
+    which === 175 ||
+    (
+      role === 'controller' &&
+      key === 'unidentified' &&
+      !e.ctrlKey &&
+      !e.altKey &&
+      !e.metaKey
+    )
+  );
+}
+
+function onRemoteKey(e, phase){
+  if(role !== 'controller') return;
+  if(!isVolumeUpEvent(e)) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  const now = Date.now();
+
+  if(phase === 'down'){
+    if(e.repeat || volumeKeyIsDown) return;
+    volumeKeyIsDown = true;
+    lastVolumeHandledAt = now;
     handleVolume();
+    return;
   }
+
+  if(volumeKeyIsDown){
+    volumeKeyIsDown = false;
+    return;
+  }
+
+  if(now - lastVolumeHandledAt < 120) return;
+
+  lastVolumeHandledAt = now;
+  handleVolume();
+}
+
+document.addEventListener('keydown', e => onRemoteKey(e, 'down'), true);
+document.addEventListener('keyup', e => onRemoteKey(e, 'up'), true);
+
+function activateControllerPage(){
+  voicesEnabled = true;
+  if(role !== 'controller') return;
+
+  document.body.setAttribute('tabindex', '-1');
+
+  try{
+    document.body.focus({preventScroll:true});
+  }catch(e){
+    try{ document.body.focus(); }catch(_) {}
+  }
+}
+
+['click','touchstart','pointerdown'].forEach(ev=>{
+  document.addEventListener(ev, activateControllerPage, {passive:true});
 });
 
-//document.addEventListener('keyup', (e) => {
-//  if (
-//    (e.key && e.key.includes("Volume")) ||
-//    (e.code && e.code.includes("Volume"))
-//  ) {
-//    handleVolume();
-//  }
-//});
+activateControllerPage();
+
 document.addEventListener('click',()=>{voicesEnabled=true},{once:true});
 document.querySelector('[data-action="start"]')?.addEventListener('click',()=>{
   const url = fixedCourtId ? `/api/t/${publicId}/court/${fixedCourtId}/start` : `/api/t/${publicId}/start`;
