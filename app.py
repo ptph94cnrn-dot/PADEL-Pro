@@ -1253,6 +1253,55 @@ def api_undo(public_id, match_id):
     undo_match(m); db.session.commit()
     return jsonify_and_emit(t)
 
+@app.route("/api/controller/<token>/clicks", methods=["POST"])
+def api_controller_clicks(token):
+    court = Court.query.filter_by(controller_token=token).first()
+    if not court:
+        abort(404)
+
+    t = db.session.get(Tournament, court.tournament_id)
+    auto_finish_round_if_needed(t)
+
+    m = Match.query.filter_by(
+        tournament_id=t.id,
+        round_no=t.active_round,
+        court_id=court.id
+    ).first()
+
+    if not m:
+        return jsonify({"ok": False, "error": "Kein Match auf diesem Court."}), 400
+
+    data = request.get_json(silent=True) or {}
+    clicks = int(data.get("clicks", 1))
+
+    if m.round_no != t.active_round or m.status == "finished":
+        return jsonify_and_emit(t)
+
+    if not is_final_phase(m):
+        if not court.timer_running or court_remaining_seconds(court, t) <= 0:
+            return jsonify({"ok": False, "error": "Court-Zeit läuft nicht."}), 400
+
+    if clicks == 1:
+        add_point(m, 0)
+        action = "Punkt links"
+    elif clicks == 2:
+        add_point(m, 1)
+        action = "Punkt rechts"
+    else:
+        undo_match(m)
+        action = "Undo"
+
+    db.session.commit()
+    emit_tournament_state(t)
+
+    return jsonify({
+        "ok": True,
+        "action": action,
+        "score": display_points(m),
+        "games": [m.games1, m.games2],
+        "sets": [m.sets1, m.sets2],
+    })
+
 
 @app.route("/api/t/<public_id>/match/<int:match_id>/reset", methods=["POST"])
 @login_required
