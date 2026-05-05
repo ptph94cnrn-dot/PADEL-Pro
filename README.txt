@@ -24,3 +24,6 @@ Wichtige Änderungen in dieser Version:
 - Zeitansagen kommen nur im Controller und nur für die eigene Court-Zeit.
 - Punkte werden serverseitig blockiert, wenn der Court-Timer abgelaufen oder nicht gestartet ist.
 - Finals bleiben ohne Zeitlimit und werden manuell beendet.
+
+git remote add origin https://github.com/ptph94cnrn-dot/PADEL-Pro.git
+SECRET_KEY=asdhjkl123!§$%ASDklj234
